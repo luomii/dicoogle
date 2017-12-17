@@ -51,15 +51,15 @@ const IndexStatusView = React.createClass({
         }
 
         let items;
-        if (this.state.data.results.length === 0) {
+        if (this.state.data.tasks.length === 0) {
           items = (<div>No tasks</div>);
         } else {
-          items = this.state.data.results.map(item => (
-            <TaskStatus key={item.taskUid} index={item.taskUid} item={item} onCloseStopClicked={this.onCloseStopClicked.bind(this, item.taskUid, item.complete)} />
+          items = this.state.data.tasks.map(item => (
+            <TaskStatus key={item.taskUid} index={item.taskUid} item={item} onCloseStopClicked={this.onCloseStopClicked.bind(this, item.taskUid, item.complete, item.canceled)} />
           ));
         }
         return (
-          <div className="">
+          <div>
             <div className="panel panel-primary topMargin">
               <div className="panel-heading">
                 <h3 className="panel-title">Start indexing</h3>
@@ -70,7 +70,7 @@ const IndexStatusView = React.createClass({
                     Index directory:
                   </div>
                   <div className="col-xs-6 col-sm-10">
-                    <input id="path" type="text" className="form-control" value={this.state.data.path} placeholder="/path/to/directory"/>
+                    <input id="path" type="text" className="form-control" placeholder="/path/to/directory"/>
                   </div>
                 </div>
                 <button className="btn btn_dicoogle" onClick={this.onStartClicked}>Start</button>
@@ -88,18 +88,20 @@ const IndexStatusView = React.createClass({
           </div>
         );
       },
-      onStartClicked: function(){
+
+      onStartClicked: function() {
         IndexStatusActions.start(document.getElementById("path").value);
       },
-      onCloseStopClicked: function(uid, type){
-        if(type){
+
+      onCloseStopClicked: function(uid, isComplete, isCanceled) {
+        if (isComplete || isCanceled) {
           IndexStatusActions.close(uid);
         }
-        else{
+        else {
           IndexStatusActions.stop(uid);
         }
       }
-      });
+});
 
 export {
   IndexStatusView
